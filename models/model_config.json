@@ -1,0 +1,47 @@
+{
+  "feature_names": [
+    "name_levenshtein_ratio",
+    "name_token_sort_ratio",
+    "name_token_set_ratio",
+    "name_jaro_winkler",
+    "name_partial_ratio",
+    "name_stripped_ratio",
+    "name_exact_clean",
+    "name_exact_stripped",
+    "name_compact_match",
+    "name_acronym_match",
+    "name_len_diff",
+    "name_len_ratio",
+    "addr_missing",
+    "addr_levenshtein_ratio",
+    "addr_token_sort_ratio",
+    "addr_token_set_ratio",
+    "addr_token_jaccard",
+    "addr_exact_clean",
+    "addr_shared_token_count",
+    "addr_len_diff",
+    "exact_number_match",
+    "number_jaccard",
+    "postal_code_match",
+    "has_number_conflict",
+    "name_x_addr_sim",
+    "name_x_addr_sort",
+    "strong_name_weak_addr",
+    "weak_name_strong_addr",
+    "name_match_and_num_match"
+  ],
+  "best_iteration": 600,
+  "best_score": {
+    "train": {
+      "binary_logloss": 0.023532663883781158,
+      "auc": 0.9994226070921365
+    },
+    "val": {
+      "binary_logloss": 0.03179953065617143,
+      "auc": 0.9987680884760787
+    }
+  },
+  "num_features": 29,
+  "train_pairs_count": 464574,
+  "seed": 42
+}

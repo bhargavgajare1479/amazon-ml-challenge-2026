@@ -1,0 +1,12 @@
+{
+  "total_true_pairs_checked": 7638365,
+  "country_mismatches": 0,
+  "country_match_rate": 100.0,
+  "evaluated_sample_size": 500000,
+  "exact_raw_name_match_pct": 4.63,
+  "exact_norm_name_match_pct": 21.77,
+  "exact_raw_addr_match_pct": 2.24,
+  "exact_norm_addr_match_pct": 8.29,
+  "exact_norm_both_pct": 1.3,
+  "exact_norm_neither_pct": 71.24
+}

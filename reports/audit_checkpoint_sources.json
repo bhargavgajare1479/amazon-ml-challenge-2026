@@ -1,0 +1,530 @@
+{
+  "train_s1": {
+    "file_size_mb": 200.34,
+    "n_rows": 2206821,
+    "columns": [
+      "entity_id",
+      "business_name",
+      "business_address",
+      "country"
+    ],
+    "dtypes": {
+      "entity_id": "str",
+      "business_name": "str",
+      "business_address": "str",
+      "country": "str"
+    },
+    "memory_usage_mb": 604.43,
+    "missing_nulls": {
+      "entity_id": 0,
+      "business_name": 0,
+      "business_address": 0,
+      "country": 0
+    },
+    "missing_empty_whitespace": {
+      "entity_id": 0,
+      "business_name": 0,
+      "business_address": 0,
+      "country": 0
+    },
+    "unique_entity_ids": 2206821,
+    "duplicate_entity_ids": 0,
+    "id_prefixes": {
+      "S1-": 2206821
+    },
+    "unique_business_names": 1539229,
+    "duplicate_business_names": 667592,
+    "unique_business_addresses": 2130606,
+    "duplicate_business_addresses": 76215,
+    "exact_duplicate_rows": 0,
+    "duplicate_name_addr_country": 0,
+    "country_counts": {
+      "US": 1323633,
+      "India": 883188
+    },
+    "country_pct": {
+      "US": 59.979,
+      "India": 40.021
+    },
+    "name_length_stats": {
+      "min": 3,
+      "max": 105,
+      "mean": 24.03,
+      "median": 24.0,
+      "p25": 18.0,
+      "p75": 30.0,
+      "p95": 37.0,
+      "p99": 42.0,
+      "len_0": 0,
+      "len_le_2": 0
+    },
+    "addr_length_stats": {
+      "min": 11,
+      "max": 256,
+      "mean": 52.07,
+      "median": 41.0,
+      "p25": 33.0,
+      "p75": 70.0,
+      "p95": 103.0,
+      "p99": 124.0,
+      "len_0": 0,
+      "len_le_5": 0
+    },
+    "top_frequent_names": {
+      "Primary Care Group": 253,
+      "Ear Nose & Throat Group": 251,
+      "Pediatric Group": 222,
+      "Womens Health Group": 220,
+      "Physical Therapy Group": 218
+    },
+    "top_frequent_addresses": {
+      "108 Norle Street, College Twp, PA": 14,
+      "104 Roadrunner Circle, Elephant Butte, NM": 13,
+      "218 Phillips Street, Storm Lake, IA": 13,
+      "43 Franklin Street, Delaware, OH": 13,
+      "55, Lavkush Vihar, Singhpur, Kachhar Bithoor Road, Kalyanpur, Kanpur Nagar, Uttar Pradesh": 13
+    },
+    "processing_time_sec": 11.65
+  },
+  "train_s2": {
+    "file_size_mb": 466.63,
+    "n_rows": 5034616,
+    "columns": [
+      "entity_id",
+      "business_name",
+      "business_address",
+      "country"
+    ],
+    "dtypes": {
+      "entity_id": "str",
+      "business_name": "str",
+      "business_address": "str",
+      "country": "str"
+    },
+    "memory_usage_mb": 1418.8,
+    "missing_nulls": {
+      "entity_id": 0,
+      "business_name": 2,
+      "business_address": 168967,
+      "country": 0
+    },
+    "missing_empty_whitespace": {
+      "entity_id": 0,
+      "business_name": 2,
+      "business_address": 168967,
+      "country": 0
+    },
+    "unique_entity_ids": 5034616,
+    "duplicate_entity_ids": 0,
+    "id_prefixes": {
+      "S2-": 5034616
+    },
+    "unique_business_names": 4402008,
+    "duplicate_business_names": 632608,
+    "unique_business_addresses": 4337261,
+    "duplicate_business_addresses": 697355,
+    "exact_duplicate_rows": 0,
+    "duplicate_name_addr_country": 25873,
+    "country_counts": {
+      "US": 3016817,
+      "India": 2017799
+    },
+    "country_pct": {
+      "US": 59.921,
+      "India": 40.079
+    },
+    "name_length_stats": {
+      "min": 0,
+      "max": 104,
+      "mean": 25.1,
+      "median": 25.0,
+      "p25": 19.0,
+      "p75": 31.0,
+      "p95": 40.0,
+      "p99": 48.0,
+      "len_0": 2,
+      "len_le_2": 704
+    },
+    "addr_length_stats": {
+      "min": 0,
+      "max": 249,
+      "mean": 46.23,
+      "median": 37.0,
+      "p25": 30.0,
+      "p75": 61.0,
+      "p95": 96.0,
+      "p99": 118.0,
+      "len_0": 168967,
+      "len_le_5": 168967
+    },
+    "top_frequent_names": {
+      "Primary Care": 320,
+      "Physical Therapy": 307,
+      "Urgent Care": 297,
+      "Womens Health": 297,
+      "Behavioral Health": 296
+    },
+    "top_frequent_addresses": {
+      "842 38, CALEDONAI TOWNSHIP, WI": 18,
+      "1948 WEAVER FOREST WAY, MORRISVILLE, NC": 18,
+      "66 FRANK EDGE, ALTO, TX": 17,
+      "G-58/1, BENSON CROSS ROAD, BANGALORE., Karnataka": 16,
+      "302 REGENCY CT, AMES, IA": 16
+    },
+    "processing_time_sec": 31.91
+  },
+  "train_s3": {
+    "file_size_mb": 480.37,
+    "n_rows": 5285603,
+    "columns": [
+      "entity_id",
+      "business_name",
+      "business_address",
+      "country"
+    ],
+    "dtypes": {
+      "entity_id": "str",
+      "business_name": "str",
+      "business_address": "str",
+      "country": "str"
+    },
+    "memory_usage_mb": 1478.47,
+    "missing_nulls": {
+      "entity_id": 0,
+      "business_name": 13,
+      "business_address": 175916,
+      "country": 0
+    },
+    "missing_empty_whitespace": {
+      "entity_id": 0,
+      "business_name": 13,
+      "business_address": 175916,
+      "country": 0
+    },
+    "unique_entity_ids": 5285603,
+    "duplicate_entity_ids": 0,
+    "id_prefixes": {
+      "S3-": 5285603
+    },
+    "unique_business_names": 4651608,
+    "duplicate_business_names": 633995,
+    "unique_business_addresses": 4632764,
+    "duplicate_business_addresses": 652839,
+    "exact_duplicate_rows": 0,
+    "duplicate_name_addr_country": 18860,
+    "country_counts": {
+      "US": 3170056,
+      "India": 2115547
+    },
+    "country_pct": {
+      "US": 59.975,
+      "India": 40.025
+    },
+    "name_length_stats": {
+      "min": 0,
+      "max": 123,
+      "mean": 25.2,
+      "median": 25.0,
+      "p25": 18.0,
+      "p75": 31.0,
+      "p95": 42.0,
+      "p99": 50.0,
+      "len_0": 13,
+      "len_le_2": 9275
+    },
+    "addr_length_stats": {
+      "min": 0,
+      "max": 240,
+      "mean": 46.71,
+      "median": 42.0,
+      "p25": 35.0,
+      "p75": 54.0,
+      "p95": 91.0,
+      "p99": 115.0,
+      "len_0": 175916,
+      "len_le_5": 175930
+    },
+    "top_frequent_names": {
+      "Primary Care": 421,
+      "Physical Therapy": 399,
+      "Pediatric Dental": 393,
+      "Womens Health": 379,
+      "Urgent Care": 377
+    },
+    "top_frequent_addresses": {
+      "Ground Floor, Bangalore, KA": 29,
+      "Floor, Mumbai, MH": 26,
+      "18, Kolkata, Howrah, WB": 26,
+      "303, Mumbai, MH": 25,
+      "12, Ahmedabad, GJ": 23
+    },
+    "processing_time_sec": 32.59
+  },
+  "test_s1": {
+    "file_size_mb": 166.91,
+    "n_rows": 1732544,
+    "columns": [
+      "entity_id",
+      "business_name",
+      "business_address",
+      "country"
+    ],
+    "dtypes": {
+      "entity_id": "str",
+      "business_name": "str",
+      "business_address": "str",
+      "country": "str"
+    },
+    "memory_usage_mb": 485.89,
+    "missing_nulls": {
+      "entity_id": 0,
+      "business_name": 0,
+      "business_address": 0,
+      "country": 0
+    },
+    "missing_empty_whitespace": {
+      "entity_id": 0,
+      "business_name": 0,
+      "business_address": 0,
+      "country": 0
+    },
+    "unique_entity_ids": 1732544,
+    "duplicate_entity_ids": 0,
+    "id_prefixes": {
+      "S1-": 1732544
+    },
+    "unique_business_names": 1238867,
+    "duplicate_business_names": 493677,
+    "unique_business_addresses": 1677483,
+    "duplicate_business_addresses": 55061,
+    "exact_duplicate_rows": 0,
+    "duplicate_name_addr_country": 0,
+    "country_counts": {
+      "India": 809986,
+      "US": 663106,
+      "France": 259452
+    },
+    "country_pct": {
+      "India": 46.751,
+      "US": 38.274,
+      "France": 14.975
+    },
+    "name_length_stats": {
+      "min": 3,
+      "max": 92,
+      "mean": 23.84,
+      "median": 24.0,
+      "p25": 18.0,
+      "p75": 29.0,
+      "p95": 36.0,
+      "p99": 42.0,
+      "len_0": 0,
+      "len_le_2": 0
+    },
+    "addr_length_stats": {
+      "min": 11,
+      "max": 268,
+      "mean": 57.21,
+      "median": 50.0,
+      "p25": 36.0,
+      "p75": 74.0,
+      "p95": 105.0,
+      "p99": 126.0,
+      "len_0": 0,
+      "len_le_5": 0
+    },
+    "top_frequent_names": {
+      "Bordeaux Club SARL": 205,
+      "Nantes Club SARL": 157,
+      "Lille Club SARL": 147,
+      "Urgent Care Group": 123,
+      "Lille Club SAS": 122
+    },
+    "top_frequent_addresses": {
+      "12 RUE Lyderic, Lille, Hauts-de-France": 99,
+      "27 RUE Jean Bart, Lille, Hauts-de-France": 85,
+      "30 RUE des Meuniers, Lille, Hauts-de-France": 72,
+      "27 RUE Jean Bart, Maison des Associations, Lille, Hauts-de-France": 67,
+      "100 RUE de Lille, Tourcoing, Hauts-de-France": 46
+    },
+    "processing_time_sec": 9.65
+  },
+  "test_s2": {
+    "file_size_mb": 485.86,
+    "n_rows": 4887273,
+    "columns": [
+      "entity_id",
+      "business_name",
+      "business_address",
+      "country"
+    ],
+    "dtypes": {
+      "entity_id": "str",
+      "business_name": "str",
+      "business_address": "str",
+      "country": "str"
+    },
+    "memory_usage_mb": 1419.78,
+    "missing_nulls": {
+      "entity_id": 0,
+      "business_name": 46,
+      "business_address": 129408,
+      "country": 0
+    },
+    "missing_empty_whitespace": {
+      "entity_id": 0,
+      "business_name": 46,
+      "business_address": 129408,
+      "country": 0
+    },
+    "unique_entity_ids": 4887273,
+    "duplicate_entity_ids": 0,
+    "id_prefixes": {
+      "S2-": 4887273
+    },
+    "unique_business_names": 4311040,
+    "duplicate_business_names": 576233,
+    "unique_business_addresses": 4224783,
+    "duplicate_business_addresses": 662490,
+    "exact_duplicate_rows": 0,
+    "duplicate_name_addr_country": 22641,
+    "country_counts": {
+      "India": 2312565,
+      "US": 1871330,
+      "France": 703378
+    },
+    "country_pct": {
+      "India": 47.318,
+      "US": 38.29,
+      "France": 14.392
+    },
+    "name_length_stats": {
+      "min": 0,
+      "max": 102,
+      "mean": 25.7,
+      "median": 25.0,
+      "p25": 19.0,
+      "p75": 32.0,
+      "p95": 42.0,
+      "p99": 49.0,
+      "len_0": 46,
+      "len_le_2": 10166
+    },
+    "addr_length_stats": {
+      "min": 0,
+      "max": 269,
+      "mean": 50.41,
+      "median": 43.0,
+      "p25": 32.0,
+      "p75": 67.0,
+      "p95": 99.0,
+      "p99": 120.0,
+      "len_0": 129408,
+      "len_le_5": 129413
+    },
+    "top_frequent_names": {
+      "CC": 302,
+      "PC": 197,
+      "LC": 194,
+      "AC": 174,
+      "SC": 174
+    },
+    "top_frequent_addresses": {
+      "CALAIS": 81,
+      "27 RUE JEAN BART, LILLE": 79,
+      "BORDEAUX": 64,
+      "RUE LYDERIC, LILLE": 64,
+      "30 RUE DES MEUNIERS, LILLE": 57
+    },
+    "processing_time_sec": 31.18
+  },
+  "test_s3": {
+    "file_size_mb": 482.56,
+    "n_rows": 5082316,
+    "columns": [
+      "entity_id",
+      "business_name",
+      "business_address",
+      "country"
+    ],
+    "dtypes": {
+      "entity_id": "str",
+      "business_name": "str",
+      "business_address": "str",
+      "country": "str"
+    },
+    "memory_usage_mb": 1452.44,
+    "missing_nulls": {
+      "entity_id": 0,
+      "business_name": 59,
+      "business_address": 136098,
+      "country": 0
+    },
+    "missing_empty_whitespace": {
+      "entity_id": 0,
+      "business_name": 59,
+      "business_address": 136098,
+      "country": 0
+    },
+    "unique_entity_ids": 5082316,
+    "duplicate_entity_ids": 0,
+    "id_prefixes": {
+      "S3-": 5082316
+    },
+    "unique_business_names": 4521928,
+    "duplicate_business_names": 560388,
+    "unique_business_addresses": 4456435,
+    "duplicate_business_addresses": 625881,
+    "exact_duplicate_rows": 0,
+    "duplicate_name_addr_country": 16293,
+    "country_counts": {
+      "India": 2405000,
+      "US": 1945701,
+      "France": 731615
+    },
+    "country_pct": {
+      "India": 47.321,
+      "US": 38.284,
+      "France": 14.395
+    },
+    "name_length_stats": {
+      "min": 0,
+      "max": 103,
+      "mean": 25.66,
+      "median": 25.0,
+      "p25": 19.0,
+      "p75": 32.0,
+      "p95": 42.0,
+      "p99": 50.0,
+      "len_0": 59,
+      "len_le_2": 19910
+    },
+    "addr_length_stats": {
+      "min": 0,
+      "max": 267,
+      "mean": 48.74,
+      "median": 43.0,
+      "p25": 35.0,
+      "p75": 59.0,
+      "p95": 94.0,
+      "p99": 117.0,
+      "len_0": 136098,
+      "len_le_5": 136145
+    },
+    "top_frequent_names": {
+      "CC": 387,
+      "SC": 358,
+      "AC": 297,
+      "PC": 286,
+      "LC": 245
+    },
+    "top_frequent_addresses": {
+      "Calais": 89,
+      "27 Rue Jean Bart, Lille": 84,
+      "Calais, Pas-de-Calais": 74,
+      "12 Rue Lyderic, Lille, Nord": 72,
+      "Calais, Hauts-de-France": 64
+    },
+    "processing_time_sec": 32.1
+  }
+}

@@ -1,0 +1,49 @@
+# Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Datasets & intermediate data (large files)
+dataset/
+data/
+output/
+*.tsv
+*.csv
+!experiments/experiments.csv
+
+# Model weights & serialized artifacts
+models/*.bin
+models/*.pt
+models/*.pth
+models/*.onnx
+models/*.joblib
+models/*.pkl
+*.bin
+*.pt
+*.pth
+*.joblib
+*.pkl
+
+# Logs & temp files
+*.log
+scratch/
+temp/
+tmp/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

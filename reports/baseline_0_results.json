@@ -1,0 +1,28 @@
+{
+  "baseline_0a_name_only": {
+    "macro_f05": 0.38328,
+    "macro_precision": 0.42468,
+    "macro_recall": 0.35596,
+    "singleton_accuracy": 0.30551,
+    "singleton_count": 671,
+    "non_singleton_f05": 0.38788,
+    "non_singleton_count": 11335,
+    "total_entities": 12006,
+    "total_true_matches": 41606,
+    "total_predicted_matches": 68633,
+    "total_true_positives": 14974
+  },
+  "baseline_0b_name_and_addr": {
+    "macro_f05": 0.1229,
+    "macro_precision": 0.16144,
+    "macro_recall": 0.08396,
+    "singleton_accuracy": 0.65574,
+    "singleton_count": 671,
+    "non_singleton_f05": 0.09136,
+    "non_singleton_count": 11335,
+    "total_entities": 12006,
+    "total_true_matches": 41606,
+    "total_predicted_matches": 19260,
+    "total_true_positives": 2084
+  }
+}

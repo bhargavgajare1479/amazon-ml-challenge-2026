@@ -1,0 +1,17 @@
+{
+  "optimal_tau": 0.85,
+  "metrics": {
+    "macro_f05": 0.77132,
+    "macro_precision": 0.85474,
+    "macro_recall": 0.63321,
+    "singleton_accuracy": 0.86587,
+    "singleton_count": 671,
+    "non_singleton_f05": 0.76573,
+    "non_singleton_count": 11335,
+    "total_entities": 12006,
+    "total_true_matches": 41606,
+    "total_predicted_matches": 27323,
+    "total_true_positives": 26000
+  },
+  "evaluation_time_sec": 250.1
+}

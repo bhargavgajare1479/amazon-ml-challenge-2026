@@ -1,0 +1,171 @@
+# Amazon ML Challenge 2026: Technical Requirements Document (TRD)
+
+**Document Path:** `docs/TRD.md`  
+**System:** High-Performance Business Entity Resolution Pipeline  
+**Status:** ACTIVE  
+
+---
+
+### 1. System Overview
+The Entity Resolution Pipeline processes millions of multi-source business records to link noisy records from Source 2 and Source 3 to canonical reference records in Source 1. The architecture leverages country-partitioned multi-channel candidate blocking followed by pairwise feature extraction, tree-based gradient boosted classification, and conservative thresholding.
+
+---
+
+### 2. Data Architecture
+* **Raw Layer:** Immutable `.tsv` files under `dataset/train/` and `dataset/test/`.
+* **Validation Layer:** Stratified 30,000 $S1$ entities with isolated ground truth in `data/validation/`.
+* **Processing / Cache Layer:** Inverted index dictionaries and intermediate candidate files in `data/processed/`.
+* **Output Layer:** Scored and validated submission files in `output/`.
+
+---
+
+### 3. Data Flow
+
+```
+[Raw TSV Files]
+       │
+       ▼
+[TSV Stream Ingestion (sep='\t', dtype=str)]
+       │
+       ▼
+[Partition by Country: US, India, France]
+       │
+       ▼
+[Multi-View Text Normalization (Accent, Digits, Legal Suffixes)]
+       │
+       ▼
+[Inverted Index Construction (Target Records)]
+       │
+       ▼
+[Candidate Querying per S1 Entity] ────────────► [candidate_pairs.tsv]
+       │
+       ▼
+[Pairwise Feature Engineering (RapidFuzz, Jaccard, Numeric)]
+       │
+       ▼
+[GBDT Match Classifier (P(Match))]
+       │
+       ▼
+[Calibrated Thresholding (tau)]
+       │
+       ▼
+[Target Disjoint Constraint Enforcement]
+       │
+       ▼
+[Export & Validation via validate_submission.py] ──► [matching_results.tsv]
+```
+
+---
+
+### 4. Data Ingestion
+* **CURRENT IMPLEMENTATION:** Ingests TSV files using `pd.read_csv(path, sep='\t', dtype=str)` with explicit chunking (`chunksize=500000`) for multi-million row files to keep RAM predictable.
+* **PROPOSED IMPROVEMENT:** Use Polars or optimized chunked generator pipelines with PyArrow backends for even faster I/O if memory pressure increases during full test processing.
+
+---
+
+### 5. Data Validation & Verification
+* **CURRENT IMPLEMENTATION:** Built-in checks verify that:
+  * ID prefixes strictly adhere to `S1-`, `S2-`, `S3-`.
+  * No duplicate IDs exist in any source.
+  * Ground truth entities exactly match Source 1 entities.
+* **PROPOSED IMPROVEMENT:** Automated pre-flight data integrity assertions integrated into `src/io.py`.
+
+---
+
+### 6. Normalization
+* **CURRENT IMPLEMENTATION:** (`code/business_entity_resolution/src/normalize.py`)
+  * `clean_basic()`: NFKD accent decomposition, lowercase, ampersand standardization, whitespace trimming, and digit-letter uncoupling (`No127` $\rightarrow$ `No 127`).
+  * `normalize_business_name()`: Generates `raw`, `clean`, `stripped_legal`, `compact`, `bigram`, `acronym`, and `sig_tokens`.
+  * `normalize_business_address()`: Normalizes standard abbreviations (`st` $\rightarrow$ `street`, `rd` $\rightarrow$ `road`), extracts house numbers and postal PIN candidates.
+* **PROPOSED IMPROVEMENT:** Expanded multilingual legal suffix table for French entities (`EURL`, `GIE`, `SASU`) and French street indicators (`bd`, `allee`, `impasse`).
+
+---
+
+### 7. Blocking & Candidate Generation
+* **CURRENT IMPLEMENTATION:** (`code/business_entity_resolution/src/blocking.py`)
+  * Operates strictly within country partitions.
+  * Single-pass inverted indexing on targets across 7 channels: exact name, compact name, bigram, exact address, address number + word, rare tokens, and prefix + location.
+  * Yields **69.97% candidate recall** with **57.65 candidates per S1** on the 4.13M India target benchmark.
+* **PROPOSED IMPROVEMENT:** Add a character 3-gram MinHash / token inverted index channel for severe name corruptions, targeting $\ge 85\%$ candidate recall while maintaining $\le 100$ candidates/S1.
+
+---
+
+### 8. Pairwise Feature Engineering
+* **CURRENT IMPLEMENTATION:** Basic exact-match flags in baseline scripts (`scripts/evaluate_baseline0.py`).
+* **PROPOSED IMPROVEMENT:** Implement `src/features.py` computing:
+  * Name similarity: Levenshtein distance ratio, Jaro-Winkler, Token-Sort ratio, Token-Set ratio via `RapidFuzz`.
+  * Address similarity: Token Jaccard similarity, character ratio, shared word count.
+  * Numeric features: Exact house number match (Boolean), postal/PIN match (Boolean), number difference.
+  * Cross-field interactions: Name similarity $\times$ Address similarity, Acronym match flag.
+
+---
+
+### 9. Training Data Construction & Negative Sampling
+* **CURRENT IMPLEMENTATION:** Evaluated on validation set ground truth.
+* **PROPOSED IMPROVEMENT:** (`src/labels.py`)
+  * For candidate pairs $(S1, Target)$: label $= 1$ if present in ground truth, $0$ otherwise.
+  * Because candidates naturally contain hard negatives (records sharing similar names or identical addresses that are not true matches), candidates generated by blocking form an ideal training set for the classifier.
+  * Subsample negatives at a 10:1 or 15:1 negative-to-positive ratio to maintain training balance without losing hard negative diversity.
+
+---
+
+### 10. Model Architecture & Training
+* **CURRENT IMPLEMENTATION:** Rule-based baselines (Baseline 0A and 0B).
+* **PROPOSED IMPROVEMENT:** (`src/train.py`)
+  * Train a **LightGBM** / **CatBoost** binary classifier minimizing binary log-loss:
+    $$\mathcal{L} = -\sum \left[ y_i \log p_i + (1 - y_i) \log (1 - p_i) \right]$$
+  * Tree parameters: `max_depth=6`, `num_leaves=31`, `n_estimators=500`, `learning_rate=0.05`.
+  * Fully compliant with Apache 2.0 / MIT licensing and $< 100 \text{ MB}$ parameter footprint (well within 8B parameter limit).
+
+---
+
+### 11. Inference Pipeline
+* **CURRENT IMPLEMENTATION:** Benchmark generation for validation split in `scripts/benchmark_blocking.py`.
+* **PROPOSED IMPROVEMENT:** (`src/predict.py`)
+  * Batch prediction: Extract features for candidate pairs in chunks of 50,000 pairs.
+  * Predict probabilities $p = P(\text{match} \mid \mathbf{x})$.
+  * Filter candidates by probability threshold $\tau$.
+
+---
+
+### 12. Thresholding & Conservative Decision Logic
+* **CURRENT IMPLEMENTATION:** Binary rule filter in Baseline 0.
+* **PROPOSED IMPROVEMENT:**
+  * Grid search threshold $\tau \in [0.60, 0.95]$ on validation split using the exact Macro $F_{0.5}$ metric.
+  * Because singletons score $0.0$ on false merges, the threshold must remain conservative ($\tau \ge 0.75$).
+
+---
+
+### 13. Multi-Match Aggregation & Target Partitioning
+* **CURRENT IMPLEMENTATION:** Independent candidate selection.
+* **PROPOSED IMPROVEMENT:**
+  * Empirical ground-truth property: Every target $S2/S3$ belongs to $\le 1$ $S1$ record.
+  * Post-processing: If candidate $T$ is claimed by multiple $S1$ entities, assign $T$ exclusively to the $S1$ entity with the highest predicted probability:
+    $$S1^*(T) = \arg\max_{S1} P(\text{match}(S1, T))$$
+
+---
+
+### 14. Evaluation Engine
+* **CURRENT IMPLEMENTATION:** (`code/business_entity_resolution/src/evaluate.py`)
+  * Full implementation of Macro $F_{0.5}$ with singleton handling.
+  * Evaluates candidate recall, candidate reduction ratio, macro precision, and macro recall.
+  * Passes verification against official README test case (`0.71429`).
+
+---
+
+### 15. Submission Generation & Output Validation
+* **CURRENT IMPLEMENTATION:** Official validator script `utils/validate_submission.py`.
+* **PROPOSED IMPROVEMENT:** Dedicated script `src/submission.py` that formats predictions into `output/matching_results.tsv` and `output/candidate_pairs.tsv` and invokes `utils/validate_submission.py` automatically.
+
+---
+
+### 16. Reproducibility & Dependency Management
+* **CURRENT IMPLEMENTATION:** Python 3.13 virtual environment with pinned libraries: `pandas 3.0.6`, `numpy 2.5.3`, `scikit-learn 1.9.1`, `rapidfuzz 3.14.6`, `lightgbm 4.7.0`, `catboost 1.2.10`, `xgboost 3.4.1`.
+* **PROPOSED IMPROVEMENT:** Generate `requirements.txt` with pinned versions and create a single master reproduction script `run_pipeline.py`.
+
+---
+
+### 17. Computational Performance & Memory Budget
+* **Hardware Profile:** 8 Physical Cores (16 Logical), 31.1 GB RAM.
+* **Peak Memory Observed:** 3.6 GB during single-pass candidate blocking indexing over 4.13M targets.
+* **Target Throughput:** $> 15,000 \text{ entities / sec}$ during candidate querying.

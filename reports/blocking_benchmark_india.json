@@ -1,0 +1,10 @@
+{
+  "candidate_recall": 0.69968,
+  "covered_true_matches": 29111,
+  "total_true_matches": 41606,
+  "total_candidates": 692148,
+  "candidates_per_s1_mean": 57.65,
+  "candidates_per_s1_median": 59.0,
+  "candidates_per_s1_max": 100,
+  "reduction_ratio": 0.9999861
+}
