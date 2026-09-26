@@ -1,0 +1,28 @@
+# Virtual environment
+venv/
+.venv/
+
+# Data (never commit — large, and per the challenge's own zip structure, code and data are submitted separately)
+dataset/
+output/
+output_sample/
+
+# Python bytecode/cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment/secrets
+.env
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
