@@ -61,3 +61,36 @@ Edit src/config.py. In priority order:
 Blocking recall vs. candidate-set size (MIN_SIM, ADAPTIVE_MARGIN, TOP_K_BLOCK, MAX_CANDIDATES_PER_ENTITY) — this is the hard ceiling on everything downstream, and now also graded directly on size. Loosen if recall is low; tighten if recall is already high but the average candidate count feels large.
 Feature set (src/features.py) — add features based on error analysis on your worst validation entities.
 Threshold grid (THRESHOLD_GRID) — usually doesn't need changing, but widen it if the tuned threshold lands at either edge of the current range.
+
+## Steps to run
+
+### 1. Set up the environment
+```bash
+python -m venv venv
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # Mac/Linux
+
+pip install -r requirements.txt
+```
+
+### 2. Add the dataset
+This repo does not include the dataset (see `.gitignore`). Place the challenge data at:
+
+dataset/train/train_source1.tsv
+dataset/train/train_source2.tsv
+dataset/train/train_source3.tsv
+dataset/train/train_ground_truth.tsv
+dataset/test/test_source1.tsv
+dataset/test/test_source2.tsv
+dataset/test/test_source3.tsv
+
+### 3. Run the pipeline
+```bash
+python -m src.pipeline --train-dir dataset/sample_train --test-dir dataset/sample_test --output-dir output_sample
+```
+Swap in `dataset/train` / `dataset/test` and a different `--output-dir` for a full run.
+
+### 4. Validate the output before submitting
+```bash
+python3 utils/validate_submission.py --matching output_sample/matching_results.tsv --candidate output_sample/candidate_pairs.tsv --test-dir dataset/sample_test --check-ids
+```
