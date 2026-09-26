@@ -1,7 +1,8 @@
 """
-Normalize + block the TEST set, saving results to work/ so the notebook can load them.
+Normalize + block a full split (test or train), saving results to work/.
 Run from code/business_entity_resolution/:
-    python src/run_test_blocking.py --data ../../dataset --k 20
+    python src/run_test_blocking.py --data ../../dataset --k 20                 (test)
+    python src/run_test_blocking.py --data ../../dataset --k 20 --split train   (train)
 Takes a while (possibly 1-3 hours). Safe to leave running.
 """
 import argparse
@@ -32,19 +33,21 @@ def main():
     ap.add_argument("--out", default="work")
     ap.add_argument("--k", type=int, default=20)
     ap.add_argument("--n_jobs", type=int, default=4)
+    ap.add_argument("--split", default="test", choices=["test", "train"])
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
 
     t0 = time.time()
-    t1 = load_norm(f"{args.data}/test/test_source1.tsv", args.n_jobs)
-    t23 = pd.concat([load_norm(f"{args.data}/test/test_source{i}.tsv", args.n_jobs)
+    sp = args.split
+    t1 = load_norm(f"{args.data}/{sp}/{sp}_source1.tsv", args.n_jobs)
+    t23 = pd.concat([load_norm(f"{args.data}/{sp}/{sp}_source{i}.tsv", args.n_jobs)
                      for i in (2, 3)], ignore_index=True)
-    t1.to_pickle(f"{args.out}/test_s1.pkl")
-    t23.to_pickle(f"{args.out}/test_idx.pkl")
+    t1.to_pickle(f"{args.out}/{sp}_s1.pkl")
+    t23.to_pickle(f"{args.out}/{sp}_idx.pkl")
     print(f"normalized in {time.time() - t0:.0f}s", flush=True)
 
     cand = block(t1, t23, k=args.k)
-    cand.to_pickle(f"{args.out}/test_cand.pkl")
+    cand.to_pickle(f"{args.out}/{sp}_cand.pkl")
     print(f"done: {len(cand):,} pairs, total {time.time() - t0:.0f}s", flush=True)
 
 

@@ -61,19 +61,25 @@ def context_features(cand: pd.DataFrame, index: pd.DataFrame) -> pd.DataFrame:
 
 
 def string_features(f: pd.DataFrame, s1: pd.DataFrame, index: pd.DataFrame,
-                    n_jobs: int = 4, chunk: int = 200_000) -> pd.DataFrame:
+                    n_jobs: int = 4, chunk: int = 50_000) -> pd.DataFrame:
     """Adds name/address/number similarity columns to f (rows = pairs)."""
     n1 = s1["name_n"].to_numpy()[f["s1_pos"]]
     a1 = s1["addr_n"].to_numpy()[f["s1_pos"]]
     n2 = index["name_n"].to_numpy()[f["cand_pos"]]
     a2 = index["addr_n"].to_numpy()[f["cand_pos"]]
-    jobs = [list(zip(n1[i:i + chunk], a1[i:i + chunk], n2[i:i + chunk], a2[i:i + chunk]))
-            for i in range(0, len(f), chunk)]
+
+    def job_iter():
+        for i in range(0, len(f), chunk):
+            yield list(zip(n1[i:i + chunk], a1[i:i + chunk], n2[i:i + chunk], a2[i:i + chunk]))
+
     if n_jobs > 1:
-        with Pool(n_jobs) as pool:
-            parts = pool.map(_pair_features, jobs)
+        # Smaller chunks + imap (instead of one big pre-built list + map) keep less
+        # data in flight across the process boundary at once - full-train runs were
+        # sending 200k-row chunks and hanging/crashing a worker on this Windows box.
+        with Pool(n_jobs, maxtasksperchild=50) as pool:
+            parts = list(pool.imap(_pair_features, job_iter()))
     else:
-        parts = [_pair_features(j) for j in jobs]
+        parts = [_pair_features(j) for j in job_iter()]
     str_cols = FEATURE_COLS[6:]
     vals = np.array([r for p in parts for r in p], dtype=np.float32).reshape(-1, len(str_cols))
     f = f.copy()
