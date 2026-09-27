@@ -2,8 +2,7 @@
 Score the test candidates with the trained model and write both submission files.
 Needs work/test_s1.pkl, work/test_idx.pkl, work/test_cand.pkl (from run_test_blocking.py).
 Run from code/business_entity_resolution/:
-    python src/predict_test.py --threshold 0.7 --out ../../output
-(--model defaults to src/lgbm_v4.txt; output_v3/ is a backup and is never written to.)
+    python src/predict_test.py --model <path to lgbm_v1.txt> --threshold 0.7 --out ../../output
 """
 import argparse
 import os
@@ -33,14 +32,12 @@ def write_lists(path, header2, s1_ids, pairs, cand_ids):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--work", default="work")
-    ap.add_argument("--model", default="src/lgbm_v4.txt")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--threshold", type=float, default=0.7)
     ap.add_argument("--out", default="../../output")
     ap.add_argument("--s1_chunk", type=int, default=200_000)
     ap.add_argument("--n_jobs", type=int, default=4)
     args = ap.parse_args()
-    if "output_v3" in os.path.abspath(args.out).lower().split(os.sep):
-        sys.exit(f"refusing to write into the v3 backup folder: {args.out}")
     os.makedirs(args.out, exist_ok=True)
     t0 = time.time()
 
@@ -50,7 +47,7 @@ def main():
     model = lgb.Booster(model_file=args.model)
     print(f"loaded {len(s1):,} S1, {len(idx):,} S2/S3, {len(cand):,} pairs", flush=True)
 
-    ctx = context_features(cand, s1, idx)   # needs the full candidate set
+    ctx = context_features(cand, idx)   # needs the full candidate set
     scored = []
     for start in range(0, len(s1), args.s1_chunk):   # string features in pieces to save RAM
         part = ctx[(ctx["s1_pos"] >= start) & (ctx["s1_pos"] < start + args.s1_chunk)]

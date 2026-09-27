@@ -11,21 +11,15 @@ from rapidfuzz import fuzz  # MIT license, fast string similarity
 
 _NUM = re.compile(r"\d+")
 
-# made by context_features (needs the full candidate set)
-CTX_COLS = [
+FEATURE_COLS = [
     "score", "rank", "score_ratio_to_top", "n_s1_competitors", "is_best_s1_for_cand",
     "cand_is_s3",
-    "name_exact", "cand_n_same_name_s1", "s1_n_same_name_cands",
-]
-# made by string_features, in the order _pair_features returns them
-STR_COLS = [
     "name_ratio", "name_token_sort", "name_token_set", "name_partial", "name_nospace",
     "name_jaccard", "name_empty_s1", "name_empty_cand", "name_len_diff",
     "addr_ratio", "addr_token_set", "addr_partial", "addr_jaccard",
     "addr_empty_s1", "addr_empty_cand", "addr_len_s1", "addr_len_cand",
     "num_jaccard", "num_shared", "num_only_s1", "num_only_cand", "first_num_equal",
 ]
-FEATURE_COLS = CTX_COLS + STR_COLS
 
 
 def _jaccard(a: set, b: set) -> float:
@@ -54,7 +48,7 @@ def _pair_features(args):
     return rows
 
 
-def context_features(cand: pd.DataFrame, s1: pd.DataFrame, index: pd.DataFrame) -> pd.DataFrame:
+def context_features(cand: pd.DataFrame, index: pd.DataFrame) -> pd.DataFrame:
     """Cheap features about how a pair ranks among the other candidates.
     Must be computed on the FULL candidate set (not in chunks)."""
     f = cand[["s1_pos", "cand_pos", "score", "rank"]].copy()
@@ -63,23 +57,6 @@ def context_features(cand: pd.DataFrame, s1: pd.DataFrame, index: pd.DataFrame) 
     best = f.groupby("cand_pos")["score"].transform("max")
     f["is_best_s1_for_cand"] = (f["score"] >= best).astype(np.int8)
     f["cand_is_s3"] = index["entity_id"].str.startswith("S3").to_numpy()[f["cand_pos"]]
-
-    # Same-name features. Every name gets one integer code (S1 and S2/S3 share the
-    # table), so "same name?" is an integer compare instead of millions of string compares.
-    # Empty names get -1 so they never count as the same name.
-    names = np.concatenate([s1["name_n"].to_numpy(), index["name_n"].to_numpy()])
-    codes, _ = pd.factorize(names)
-    codes[names == ""] = -1
-    del names
-    s, c = f["s1_pos"].to_numpy(), f["cand_pos"].to_numpy()
-    c1, c2 = codes[:len(s1)][s], codes[len(s1):][c]
-    exact = (c1 == c2) & (c1 >= 0)
-    del codes, c1, c2
-    f["name_exact"] = exact.astype(np.int8)
-    # per candidate: how many S1s in its candidate list have exactly its name
-    f["cand_n_same_name_s1"] = np.bincount(c[exact], minlength=len(index))[c].astype(np.int32)
-    # per S1: how many of its candidates have exactly its name
-    f["s1_n_same_name_cands"] = np.bincount(s[exact], minlength=len(s1))[s].astype(np.int32)
     return f
 
 
@@ -103,7 +80,7 @@ def string_features(f: pd.DataFrame, s1: pd.DataFrame, index: pd.DataFrame,
             parts = list(pool.imap(_pair_features, job_iter()))
     else:
         parts = [_pair_features(j) for j in job_iter()]
-    str_cols = STR_COLS
+    str_cols = FEATURE_COLS[6:]
     vals = np.array([r for p in parts for r in p], dtype=np.float32).reshape(-1, len(str_cols))
     f = f.copy()
     for j, c in enumerate(str_cols):
@@ -114,7 +91,7 @@ def string_features(f: pd.DataFrame, s1: pd.DataFrame, index: pd.DataFrame,
 def make_features(cand: pd.DataFrame, s1: pd.DataFrame, index: pd.DataFrame,
                   n_jobs: int = 4, chunk: int = 200_000) -> pd.DataFrame:
     """All features at once (fine for the training sample)."""
-    return string_features(context_features(cand, s1, index), s1, index, n_jobs, chunk)
+    return string_features(context_features(cand, index), s1, index, n_jobs, chunk)
 
 
 # ---------- post-processing and scoring ----------
